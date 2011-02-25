@@ -1,4 +1,3 @@
-; $Id$
 name = Computed Field
 description = Allows the user to define computed values in custom content types.
 core = 6.x

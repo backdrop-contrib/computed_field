@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * Implementation of cck hook_field_info()
