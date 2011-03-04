@@ -283,8 +283,9 @@ function computed_field_field_formatter_info() {
  * Theme function for 'default' text field formatter.
  */
 function theme_computed_field_formatter_default($element) {
+  // Make $node easily available
   $node = $element['#node'];
-
+  // Grab the field
   $field = content_fields($element['#field_name']);
   // For "some" backwards compatibility
   $node_field_item['value'] = $element['#item']['value'];
@@ -304,6 +305,9 @@ function theme_computed_field_formatter_default($element) {
  * Theme function for 'plain' text field formatter.
  */
 function theme_computed_field_formatter_plain($element) {
+  // Make $node easily available
+  $node = $element['#node'];
+  // Grab the field
   $field = content_fields($element['#field_name']);
   // For "some" backwards compatibility
   $node_field_item['value'] = $element['#item']['value'];
@@ -323,6 +327,9 @@ function theme_computed_field_formatter_plain($element) {
  * Theme function for 'markup' text field formatter.
  */
 function theme_computed_field_formatter_markup($element) {
+  // Make $node easily available
+  $node = $element['#node'];
+  // Grab the field
   $field = content_fields($element['#field_name']);
   // For "some" backwards compatibility
   $node_field_item['value'] = $element['#item']['value'];
