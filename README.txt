@@ -87,8 +87,6 @@ hold of the nid.
 In your computed field's configuration:
 
 - Computed Code:
-// ensure the node has an id by saving it if it is new.
-if (!$node->nid) node_save($node);
 // store the nid in our computed field
 $node_field[0]['value'] = $node->nid;
 
