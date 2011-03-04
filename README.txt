@@ -42,10 +42,6 @@ as the following extra options:
 Computed Code -- This is the code that will assign a value to your computed
 field. It should be valid php without the <?php ?> tags.
 
-Display this field -- Check this box to have this field appear on your node
-view pages. You will usually want this unless you want your field to be a
-hidden value.
-
 Display Format -- This is also php code which should assign a string to the
 $display variable. It has '$node_field_item['value']' available, which is the
 value of the computed field. It also has '$field' available, and you can call
