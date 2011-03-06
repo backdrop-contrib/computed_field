@@ -103,7 +103,21 @@ function computed_field_field_settings($op, $field) {
     case 'save':
       return array('code', 'display_format', 'store', 'data_type', 'data_length', 'data_not_NULL', 'data_default', 'data_sortable');
     case 'database columns':
-      if ($field['store']) {
+      if (!is_numeric($field['store'])) {
+        // Initial field creation! - CCK initially creates the field in the DB before the user is given a chance to configure it.
+        // Thus we don't know any of the field's data settings for this initial creation. Yet, if we don't set something, CCK will
+        // return SQL errors when trying to "migrate" the data column after configuration (in several senarios). So, we'll 
+        // give CCK our most basic "default" data column to work with.  After the user configures the field, it will be updated by
+        // CCK to match their chosen field data settings.
+        $columns = array(
+          'value' => array(
+            'type' => 'varchar',
+            'length' => '32',
+          ),
+        );
+      }
+      elseif ($field['store']) {
+        // User has decided to store values in the DB, so we'll gather up information on their chosen data type.
         $columns = array('value' => array());
         if ($field['data_type'] == 'longtext') {
           $columns['value']['type'] = 'text';
@@ -121,6 +135,18 @@ function computed_field_field_settings($op, $field) {
         if ($field['data_default'] != '')  {
           $columns['value']['default'] = $field['data_default'];
         }
+      }
+      else {
+      // User has chosen NOT to store values in the DB for their field, yet CCK is NOT comfortable having a field without a data
+      // column.  Without a column, SQL errors will pop up on multi-value fields and other field modification senarios. (Such as the 
+      // user later choosing to store the field in the DB.)  To avoid SQL errors we'll create a small dummy field for CCK that is 
+      // never populated with data.
+        $columns = array(
+          'value' => array(
+            'type' => 'int',
+            'size' => 'tiny',
+          ),
+        );
       }
       return $columns;
 
