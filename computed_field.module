@@ -64,15 +64,40 @@ function computed_field_field_settings($op, $field) {
         '#title' => t('Data Type'),
         '#description' => t('The SQL datatype to store this field in.'),
         '#default_value' => !empty($field['data_type']) ? $field['data_type'] : 'varchar',
-        '#options' => array('int' => 'int', 'float' => 'float', 'varchar' => 'varchar', 'text' => 'text', 'longtext' => 'longtext'),
+        '#options' => array('varchar' => 'varchar', 'text' => 'text', 'longtext' => 'longtext', 'int' => 'int', 'float' => 'float', 'numeric' => 'decimal'),
         '#required' => FALSE,
       );
       $form['database']['data_length'] = array(
         '#type' => 'textfield',
-        '#title' => t('Data Length'),
+        '#title' => t('Data Length (varchar/text only)'),
+        '#description' => t('<strong>Only</strong> valid for <strong>varchar</strong> or <strong>text</strong> fields. The length of the field stored in the database.'),
         '#default_value' => !empty($field['data_length']) ? $field['data_length'] : NULL,
         '#required' => FALSE,
       );
+      $form['database']['data_size'] = array(
+        '#type' => 'select',
+        '#title' => t('Data Size (int/float)'),
+        '#description' => t('<strong>Only</strong> valid for <strong>int</strong> or <strong>float</strong> fields. The size of the field stored in the database.'),
+        '#default_value' => !empty($field['data_size']) ? $field['data_size'] : 'normal',
+        '#options' => array('tiny' => 'tiny', 'small' => 'small', 'medium' => 'medium', 'normal' => 'normal', 'big' => 'big'),
+        '#required' => FALSE,
+      );
+      $form['database']['data_precision'] = array(
+        '#type' => 'select',
+        '#title' => t('Decimal Precision (decimal)'),
+        '#description' => t('<strong>Only</strong> valid for <strong>decimal</strong> fields. The total number of digits to store in the database, including those to the right of the decimal.'),
+        '#options' => drupal_map_assoc(range(10, 32)),
+        '#default_value' => !empty($field['data_precision']) ? $field['data_precision'] : 10,
+        '#required' => FALSE,
+      );
+      $form['database']['data_scale'] = array(
+        '#type' => 'select',
+        '#title' => t('Decimal Scale (decimal)'),
+        '#description' => t('<strong>Only</strong> valid for <strong>decimal</strong> fields. The number of digits to the right of the decimal. '),
+        '#options' => drupal_map_assoc(range(0, 10)),
+        '#default_value' => !empty($field['data_scale']) ? $field['data_scale'] : 2,
+        '#required' => FALSE,
+      );      
       $form['database']['data_default'] = array(
         '#type' => 'textfield',
         '#title' => t('Default Value'),
@@ -86,7 +111,7 @@ function computed_field_field_settings($op, $field) {
       );
       $form['database']['data_sortable'] = array(
         '#type' => 'checkbox',
-        '#title' => t('Sortable'),
+        '#title' => t('Sortable in Views'),
         '#default_value' => is_numeric($field['data_sortable']) ? $field['data_sortable'] : TRUE,
       );
       return $form;
@@ -95,13 +120,13 @@ function computed_field_field_settings($op, $field) {
         if (empty($field['data_type'])) {
           form_set_error('data_type', t('To store this field in the database, please specify a data type.'));
         }
-        if (!($field['data_type'] == 'text' || $field['data_type'] == 'longtext' || $field['data_type'] == 'float') && empty($field['data_length'])) {
+        if (($field['data_type'] == 'text' || $field['data_type'] == 'varchar') && empty($field['data_length'])) {
           form_set_error('data_length', t('To store this field in the database, please specify the data length.'));
         }
       }
       break;
     case 'save':
-      return array('code', 'display_format', 'store', 'data_type', 'data_length', 'data_not_NULL', 'data_default', 'data_sortable');
+      return array('code', 'display_format', 'store', 'data_type', 'data_length', 'data_size', 'data_precision', 'data_scale', 'data_not_NULL', 'data_default', 'data_sortable');
     case 'database columns':
       if (!is_numeric($field['store'])) {
         // Initial field creation! - CCK initially creates the field in the DB before the user is given a chance to configure it.
@@ -126,12 +151,24 @@ function computed_field_field_settings($op, $field) {
         else {
           $columns['value']['type'] = isset($field['data_type']) ? $field['data_type'] : 'varchar';
         }
-        // text and longtext should not have a length, so we ignore it
-        if (!($field['data_type'] == 'text' || $field['data_type'] == 'longtext' || $field['data_type'] == 'float')) {
+        // 'text' and 'varchar' fields get length settings
+        if ($field['data_type'] == 'text' || $field['data_type'] == 'varchar') {
           $columns['value']['length'] = isset($field['data_length']) ? $field['data_length'] : 32;
         }
-        $columns['value']['not NULL'] = isset($field['data_not_NULL']) ? $field['data_not_NULL'] : TRUE;
+        // 'int' and 'float' fields get size settings
+        if ($field['data_type'] == 'int' || $field['data_type'] == 'float') {
+          $columns['value']['size'] = isset($field['data_size']) ? $field['data_size'] : 'normal';
+        }
+        // 'decimal' fields get precision and scale settings
+        if ($field['data_type'] == 'numeric') {
+          $columns['value']['precision'] = isset($field['data_precision']) ? $field['data_precision'] : 10;
+          $columns['value']['scale'] = isset($field['data_scale']) ? $field['data_scale'] : 2;
+        }
+        // Add 'not null' settings
+        $columns['value']['not null'] = isset($field['data_not_NULL']) ? $field['data_not_NULL'] : TRUE;
+        // Allow Views sorting if set
         $columns['value']['sortable'] = isset($field['data_sortable']) ? $field['data_sortable'] : FALSE;
+        // Add default values if set
         if ($field['data_default'] != '')  {
           $columns['value']['default'] = $field['data_default'];
         }
