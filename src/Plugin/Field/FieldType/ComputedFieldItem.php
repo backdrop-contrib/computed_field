@@ -16,16 +16,16 @@ use Drupal\Core\StringTranslation\TranslationWrapper;
 use Drupal\Core\TypedData\DataDefinition;
 
 /**
- * Plugin implementation of the 'computed_field_type' field type.
+ * Plugin implementation of the 'computed' field type.
  *
  * @FieldType(
- *   id = "computed_field_type",
+ *   id = "computed",
  *   label = @Translation("Computed"),
  *   description = @Translation("Defines a field type that allows values to be computed via PHP code."),
- *   default_formatter = "computed_field_formatter"
+ *   default_formatter = "computed"
  * )
  */
-class ComputedFieldType extends FieldItemBase
+class ComputedFieldItem extends FieldItemBase
 {
 
   /**

@@ -14,17 +14,17 @@ use Drupal\Core\Field\FormatterBase;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
- * Plugin implementation of the 'computed_field_formatter' formatter.
+ * Plugin implementation of the 'computed_raw' formatter.
  *
  * @FieldFormatter(
- *   id = "computed_field_formatter",
- *   label = @Translation("Computed"),
+ *   id = "computed_raw",
+ *   label = @Translation("Computed (raw value)"),
  *   field_types = {
- *     "computed_field_type"
+ *     "computed"
  *   }
  * )
  */
-class ComputedFieldFormatter extends FormatterBase {
+class ComputedRawFormatter extends FormatterBase {
   /**
    * {@inheritdoc}
    */
@@ -84,12 +84,10 @@ class ComputedFieldFormatter extends FormatterBase {
    *   The textual output generated.
    */
   protected function viewValue(FieldItemInterface $item) {
-    $display_output = $item->executeDisplayCode($item->value);
-
     if ($this->getSetting('sanitized')) {
-      return nl2br(SafeMarkup::checkPlain($display_output));
+      return nl2br(SafeMarkup::checkPlain($item->value));
     } else {
-      return nl2br($display_output);
+      return nl2br($item->value);
     }
   }
 
