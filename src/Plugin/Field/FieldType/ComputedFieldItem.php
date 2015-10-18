@@ -130,7 +130,7 @@ class ComputedFieldItem extends FieldItemBase
       '#title' => $this->t('Computed Code (PHP)'),
       '#default_value' => $this->getSetting('computed_code'),
       '#required' => FALSE,
-      '#description' => t('<p>The variables available to your code include: <code>&$value</code>, <code>$fields</code>. To set the value of the field, set <code>$value</code>. For multi-value computed fields <code>$value</code> should be an array. Here\'s a simple example which sets the computed field\'s value to the value of the sum of the number fields (<code>field_a</code> and <code>field_b</code>) in a node entity:</p><p><code>$value = $fields[\'field_a\'][0][\'value\'] + $fields[\'field_b\'][0][\'value\'];</code></p>')
+      '#description' => t('<p>The variables available to your code include: <code>&$value</code>, <code>$fields</code>, <code>$entity</code>, <code>$entity_manager</code>. To set the value of the field, set <code>$value</code>. For multi-value computed fields <code>$value</code> should be an array. Here\'s a simple example which sets the computed field\'s value to the value of the sum of the number fields (<code>field_a</code> and <code>field_b</code>) in a node entity:</p><p><code>$value = $entity->field_a->value + $entity->field_b->value;</code></p><p>An alternative example:</p><p><code>$value = $fields[\'field_a\'][0][\'value\'] + $fields[\'field_b\'][0][\'value\'];</code></p>')
     );
 
     $element['display_code'] = array(
@@ -138,7 +138,7 @@ class ComputedFieldItem extends FieldItemBase
       '#title' => $this->t('Display Code (PHP)'),
       '#default_value' => $this->getSetting('display_code'),
       '#required' => FALSE,
-      '#description' => t('This code should assign a string to the $display_output variable, which will be printed when the field is displayed. The raw computed value of the field is in <code>$value</code>. Note: this code has no effect if you use the "Raw computed value" display formatter.')
+      '#description' => t('This code should assign a string to the $display_output variable, which will be printed when the field is displayed. The raw computed value of the field is in <code>$value</code>. Also following variables are available: <code>$fields</code>, <code>$entity</code>, <code>$entity_manager</code>. Note: this code has no effect if you use the "Raw computed value" display formatter.')
     );
 
     return $element;
@@ -225,20 +225,29 @@ class ComputedFieldItem extends FieldItemBase
    */
   public function preSave()
   {
-    $value = $this->executeComputedCode($this->getEntity()->toArray());
+    $value = $this->executeComputedCode();
     $this->setValue($value);
   }
 
-  protected function executeComputedCode($fields) {
+  protected function executeComputedCode() {
     $code = $this->getSetting('computed_code');
+    $entity_manager = \Drupal::EntityManager();
+    $entity = $this->getEntity();
+    $fields = $this->getEntity()->toArray();
     $value = NULL;
+
     eval($code);
     return $value;
   }
 
-  public function executeDisplayCode($value) {
+  public function executeDisplayCode() {
     $code = $this->getSetting('display_code');
+    $entity_manager = \Drupal::EntityManager();
+    $entity = $this->getEntity();
+    $fields = $this->getEntity()->toArray();
+    $value = $this->get('value')->getValue();
     $display_output = NULL;
+
     eval($code);
     return $display_output;
   }}

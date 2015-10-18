@@ -84,7 +84,7 @@ class ComputedFormatter extends FormatterBase {
    *   The textual output generated.
    */
   protected function viewValue(FieldItemInterface $item) {
-    $display_output = $item->executeDisplayCode($item->value);
+    $display_output = $item->executeDisplayCode();
 
     if ($this->getSetting('sanitized')) {
       return nl2br(SafeMarkup::checkPlain($display_output));
