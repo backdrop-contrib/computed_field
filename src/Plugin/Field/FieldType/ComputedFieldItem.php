@@ -199,9 +199,11 @@ class ComputedFieldItem extends FieldItemBase
   public function isEmpty()
   {
     $value = $this->get('value')->getValue();
+    $data_type = $this->getSetting('data_type');
+    $empty = TRUE;
 
     // This will depend on the class of data type.
-    switch ($field['settings']['database']['data_type']) {
+    switch ($data_type) {
 
       case 'int':
       case 'float':
