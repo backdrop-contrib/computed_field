@@ -34,7 +34,7 @@ class ComputedFieldItem extends FieldItemBase
   public static function defaultFieldSettings()
   {
     return array(
-      'computed_code' => '$value = \'\'',
+      'computed_code' => '$value = \'\';',
       'display_code' => '$display_output = $value;',
     ) + parent::defaultFieldSettings();
   }
