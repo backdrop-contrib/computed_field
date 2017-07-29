@@ -118,17 +118,20 @@ function computed_field_field_settings_form($field, $instance, $has_data) {
   $form['recalculate'] = array(
     '#type' => 'checkbox',
     '#title' => t('Recalculate the field value every time.'),
-    '#description' => t('By default, Drupal will cache the value of this field even if it is not stored in the database (and even if Page Caching is disabled). This option will cause computed_field to recalculate the value every time this field is displayed. For example, a time-based calculated value may change more often than field cache is cleared. (Note that Drupal page caching will still cache the field value.)'),
+    '#description' => t('By default, Backdrop will cache the value of this field even if it is not stored in the database (and even if Page Caching is disabled). This option will cause computed_field to recalculate the value every time this field is displayed. For example, a time-based calculated value may change more often than field cache is cleared. (Note that Backdrop page caching will still cache the field value.)'),
     '#default_value' => is_numeric($settings['recalculate']) ? $settings['recalculate'] : FALSE,
   );
   $form['store'] = array(
     '#type' => 'checkbox',
     '#title' => t('Store value in the database'),
     '#description' => t('The value will be stored in the database with the settings below.  As a result, it will only be recalculated when the entity is updated.  This option is required when accessing the field through Views.'),
-    '#default_value' => is_numeric($settings['store']) ? $settings['store'] : 1 ,
+    '#default_value' => is_numeric($settings['store']) ? $settings['store'] : 1,
     '#disabled' => $has_data,
   );
-  $form['database'] = array('#type' => 'fieldset', '#title' => t('Database Storage Settings'));
+  $form['database'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Database Storage Settings'),
+  );
 
   if ($has_data) {
     $form['database']['warning'] = array(
@@ -179,7 +182,7 @@ function computed_field_field_settings_form($field, $instance, $has_data) {
     '#type' => 'select',
     '#title' => t('Decimal Precision (decimal)'),
     '#description' => t('<strong>Only</strong> valid for <strong>decimal</strong> fields. The total number of digits to store in the database, including those to the right of the decimal.'),
-    '#options' => drupal_map_assoc(range(10, 32)),
+    '#options' => backdrop_map_assoc(range(10, 32)),
     '#default_value' => !empty($settings['database']['data_precision']) ? $settings['database']['data_precision'] : 10,
     '#required' => FALSE,
     '#disabled' => $has_data,
@@ -188,7 +191,7 @@ function computed_field_field_settings_form($field, $instance, $has_data) {
     '#type' => 'select',
     '#title' => t('Decimal Scale (decimal)'),
     '#description' => t('<strong>Only</strong> valid for <strong>decimal</strong> fields. The number of digits to the right of the decimal. '),
-    '#options' => drupal_map_assoc(range(0, 10)),
+    '#options' => backdrop_map_assoc(range(0, 10)),
     '#default_value' => !empty($settings['database']['data_scale']) ? $settings['database']['data_scale'] : 2,
     '#required' => FALSE,
     '#disabled' => $has_data,
@@ -394,15 +397,15 @@ function computed_field_field_formatter_view($entity_type, $entity, $field, $ins
     // Output the formatted display item.
     switch ($display['type']) {
       case 'computed_field_unsanitized':
-          $element[$delta] = array('#markup' => $display_output);
+        $element[$delta] = array('#markup' => $display_output);
         break;
 
       case 'computed_field_plain':
-          $element[$delta] = array('#markup' => check_plain($display_output));
+        $element[$delta] = array('#markup' => check_plain($display_output));
         break;
 
       case 'computed_field_markup':
-          $element[$delta] = array('#markup' => check_markup($display_output));
+        $element[$delta] = array('#markup' => check_markup($display_output));
         break;
     }
   }
@@ -448,7 +451,7 @@ function _computed_field_compute_value($entity_type, $entity, $field, $instance,
   $settings = $field['settings'];
 
   // Setup a variable with the field values.
-  $entity_field =& $items;
+  $entity_field = &$items;
 
   // Setup a variable with the entity language if available.
   if (isset($entity->language)) {

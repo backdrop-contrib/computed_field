@@ -61,3 +61,24 @@ function computed_field_field_schema($field) {
   }
   return;
 }
+
+/**
+ * Implements hook_update_last_removed().
+ */
+function computed_field_update_last_removed() {
+  return;
+}
+
+/**
+ * Implements hook_update_N().
+ */
+function computed_field_update_1000() {
+  $config = config('computed_field .settings');
+}
+
+/**
+ * Implements hook_install().
+ */
+function computed_field_install() {
+  // Dynamically generated variable data was detected.
+}
