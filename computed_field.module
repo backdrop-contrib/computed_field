@@ -55,7 +55,7 @@ function computed_field_entity_property_callback(&$info, $entity_type, $field, $
   if (isset($field['columns']['value']) && isset($property_types[$field['columns']['value']['type']])) {
     // Entity API's defaults are pretty good so set the property_type and let them do the work for us.
     $field_type['property_type'] = $property_types[$field['columns']['value']['type']];
-    entity_metadata_field_default_property_callback($info, $entity_type, $field, $instance, $field_type);
+    entity_plus_metadata_field_default_property_callback($info, $entity_type, $field, $instance, $field_type);
     // The only thing is that a setter doesn't make sense, so let's disable it.
     $property = &$info[$entity_type]['bundles'][$instance['bundle']]['properties'][$field['field_name']];
     unset($property['setter callback']);
