@@ -2,5 +2,6 @@ name = Computed Field
 description = Defines a field type that allows values to be "computed" via PHP code.
 backdrop = 1.x
 type = module
-dependencies[] = field, entity_plus
+dependencies[] = field
+dependencies[] = entity_plus
 package = Fields
