@@ -131,6 +131,11 @@ function computed_field_field_settings_form($field, $instance, $has_data) {
   $form['database'] = array(
     '#type' => 'fieldset',
     '#title' => t('Database Storage Settings'),
+    '#states' => array(
+      'visible' => array(
+        ':input[name$="[store]"]' => array('checked' => TRUE),
+      ),
+    ),
   );
 
   if ($has_data) {
@@ -162,6 +167,14 @@ function computed_field_field_settings_form($field, $instance, $has_data) {
     '#default_value' => !empty($settings['database']['data_length']) ? $settings['database']['data_length'] : 32,
     '#required' => FALSE,
     '#disabled' => $has_data,
+    '#states' => array(
+      'visible' => array(
+        array(
+          array(':input[name$="[database][data_type]"]' => array('value' => 'varchar')),
+          array(':input[name$="[database][data_type]"]' => array('value' => 'text')),
+        ),
+      ),
+    ),
   );
   $form['database']['data_size'] = array(
     '#type' => 'select',
@@ -177,6 +190,14 @@ function computed_field_field_settings_form($field, $instance, $has_data) {
     ),
     '#required' => FALSE,
     '#disabled' => $has_data,
+    '#states' => array(
+      'visible' => array(
+        array(
+          array(':input[name$="[database][data_type]"]' => array('value' => 'int')),
+          array(':input[name$="[database][data_type]"]' => array('value' => 'float')),
+        ),
+      ),
+    ),
   );
   $form['database']['data_precision'] = array(
     '#type' => 'select',
@@ -186,6 +207,11 @@ function computed_field_field_settings_form($field, $instance, $has_data) {
     '#default_value' => !empty($settings['database']['data_precision']) ? $settings['database']['data_precision'] : 10,
     '#required' => FALSE,
     '#disabled' => $has_data,
+    '#states' => array(
+      'visible' => array(
+        ':input[name$="[database][data_type]"]' => array('value' => 'numeric'),
+      ),
+    ),
   );
   $form['database']['data_scale'] = array(
     '#type' => 'select',
@@ -195,6 +221,11 @@ function computed_field_field_settings_form($field, $instance, $has_data) {
     '#default_value' => !empty($settings['database']['data_scale']) ? $settings['database']['data_scale'] : 2,
     '#required' => FALSE,
     '#disabled' => $has_data,
+    '#states' => array(
+      'visible' => array(
+        ':input[name$="[database][data_type]"]' => array('value' => 'numeric'),
+      ),
+    ),
   );
   $form['database']['data_default'] = array(
     '#type' => 'textfield',
