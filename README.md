@@ -7,6 +7,7 @@ Installation
 ------------
 
 * Install this module using the official Backdrop CMS instructions at https://backdropcms.org/guide/modules
+* Dependencies: entity plus
 
 
 Documentation
@@ -37,7 +38,7 @@ Issues
 Bugs and Feature requests should be reported in the Issue Queue: https://github.com/backdrop-contrib/computed_field/issues
 
 
-Current Maintainers 
+Current Maintainers
 -------------------
 * Maintained and ported to backdrop CMS by Robert Garrigós (https://github.com/robertgarrigos)
 
@@ -50,5 +51,5 @@ Credits
 * Moonshine - https://www.drupal.org/u/moonshine
 * Pedro Lozano - https://www.drupal.org/u/pedro-lozano
 
-Supporting organization for Drupal 7: 
+Supporting organization for Drupal 7:
 Colan Schwartz Consulting - (https://www.drupal.org/colan-schwartz-consulting)
